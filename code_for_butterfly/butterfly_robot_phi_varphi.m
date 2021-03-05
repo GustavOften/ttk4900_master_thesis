@@ -37,7 +37,7 @@ classdef butterfly_robot_phi_varphi
         function_for_X
         function_for_dphi
         Gamma = 1
-        Q = @(t)[20 0 0;0 20 0;0 0 20];
+        Q = @(t)[40 0 0;0 40 0;0 0 400];
         X
         phi_test
         A
@@ -52,6 +52,7 @@ classdef butterfly_robot_phi_varphi
         ddg_fun
         drho_test 
         ys
+        test
     end
     methods
         function obj = butterfly_robot_phi_varphi(calculate_riccati)
@@ -70,23 +71,26 @@ classdef butterfly_robot_phi_varphi
             end
             res_fun_g = unwrap(res_fun_g);
             figure
-            plot(res_fun_g,range_for_functions)
+            plot(range_for_functions,res_fun_g)
             hold on;
             
             k = spline(res_fun_g,range_for_functions);
+            c = polyfit(res_fun_g,range_for_functions,5)
+            
             result_spline = @(x)ppval(k,mod(x,2*pi));
             subplot(1,2,1)
             plot(res_fun_g,result_spline(res_fun_g));
-            
-            legend("true", "spline");
-            grid on;
+%             
+%             legend("true", "spline");
+%             grid on;
             obj.Phi = result_spline;
-          
+            %obj.Phi = @(x) x;
             syms phi theta varphi
             
             %% Delta: parametrization of the shape of the frame.
             delta = (obj.a - obj.b*cos(2*phi))*[sin(phi);cos(phi);0];
             obj.delta = matlabFunction(delta);
+
             
             %% Tau: 
             tau = (2*obj.b*sin(2*phi)*[sin(phi);cos(phi);0]+(obj.a - obj.b*cos(2*phi))*[cos(phi);-sin(phi);0]) ...
@@ -130,7 +134,8 @@ classdef butterfly_robot_phi_varphi
             %% Kappa: Curvature of curve.
             kappa = diff(rho,phi,phi)/dg^2/ds^2;%kappa_frame/(1-obj.R_b*norm(kappa_frame));
             obj.kappa = matlabFunction(kappa);
-
+            
+            
             %% Rotational matrices:
             obj.R = matlabFunction([cos(theta) -sin(theta) 0;sin(theta) cos(theta) 0;0 0 1]);
             obj.diff_R = matlabFunction([-sin(theta) -cos(theta) 0;cos(theta) -sin(theta) 0;0 0 0]);
@@ -173,8 +178,8 @@ classdef butterfly_robot_phi_varphi
             a= -6.012854e-01; b= 1.415366e+00; c= 3.964811e-01; d= 5.645448e-02; e= 2.783807e-03;
 
             %% This was used for fast moving perpetual, dot_varphi = 1.17;
-            a= -6.023940e+01; b= 9.115470e-03; c= 1.941337e-03; d= 1.731620e-03; e= 7.253528e-04;
-            
+            %a= -6.023940e+01; b= 9.115470e-03; c= 1.941337e-03; d= 1.731620e-03; e= 7.253528e-04;
+%             
             %% This was used for center in pi/2 a= -2.816689e+00; b= 1.850450e-01; c= -9.372952e-03; d= -3.295735e-02; e= -1.621506e-02;
             
             Theta = a*atan(b*sin(2*varphi)+c*sin(4*varphi)+d*sin(6*varphi)+e*sin(8*varphi))+varphi;
@@ -186,14 +191,24 @@ classdef butterfly_robot_phi_varphi
             %Theta = varphi -1.5076*sin(2*varphi)-0.0063*sin(4*varphi);
             dTheta = diff(Theta,varphi);%-0.2*cos(2*varphi)/(sin(2*varphi)^2+1)+1;
             ddTheta = diff(Theta,varphi,varphi);%0.4*cos(2*varphi)/(cos(2*varphi)^2+1)+0.8*sin(2*varphi)^2*cos(2*varphi)/(cos(2*varphi)^2+1)^2;
+            
             %% Theta used in Internship report
             %Theta = phi-1.3*sin(2*phi);
             %Theta = phi-0.2*sin(Rtau(1));
             obj.theta = matlabFunction(Theta);
             obj.d_theta = matlabFunction(dTheta);
             obj.dd_theta = matlabFunction(ddTheta);
-% 
-%             %% Plots phase plane of alpha betta gamma function
+
+%             %% Theta used in paper about butterfly robot:
+%             R = @(varphi)[cos(varphi) -sin(varphi) 0;sin(varphi) cos(varphi) 0;0 0 1];
+%             d_R = @(varphi)[-sin(varphi) -cos(varphi) 0;cos(varphi) -sin(varphi) 0;0 0 0];
+%             dd_R = @(varphi)[-cos(varphi) sin(varphi) 0;-sin(varphi) -cos(varphi) 0;0 0 0];
+%             numerator = @(varphi) -a*sin(2*varphi)*[1 0 0]*R(varphi)*obj.tau(varphi)-[0 1 0]*R(varphi)*obj.get_tau(varphi);
+%             denominator =  @(varphi) -a*sin(2*varphi)*[0 1 0]*R(varphi)*obj.tau(varphi)+[1 0 0]*R(varphi)*obj.get_tau(varphi);
+%             Theta = @(varphi) varphi + atan(numerator(varphi)/denominator(varphi));
+%             d_Theta = 
+            
+            %% Plots phase plane of alpha betta gamma function
             a = @(x) obj.alpha_beta_gamma(x);
             figure
             k = linspace(0,pi, 400);
@@ -209,7 +224,7 @@ classdef butterfly_robot_phi_varphi
             %% Finding solution to periodic Riccati equation
             if calculate_riccati
                 options = odeset('RelTol', 1e-10, 'AbsTol', 1e-10);
-                [ts,ys] = ode45(f_plane,[0,10],[0;1.17], options);
+                [ts,ys] = ode45(f_plane,[0,30],[0;0.224], options);
                 i = 1;
                 phi_dot = [0 0];
                 length(ys)
@@ -421,7 +436,7 @@ classdef butterfly_robot_phi_varphi
             axis equal;
             grid on;
             M(number_of_frames) = struct('cdata',[],'colormap',[]);
-            h.Visible = 'off';
+            %h.Visible = 'off';
             j = 0;
             for i = linspace(0,2*pi)
                 j = j + 1;
@@ -433,10 +448,11 @@ classdef butterfly_robot_phi_varphi
             ball = hgtransform;
             patch('XData',x_frame,'YData',y_frame,'FaceColor','yellow','Parent',frame) 
             patch('XData',x_ball,'YData',y_ball,'FaceColor','red','Parent',ball) 
-            start_falling = length(results.after_fall(:,1))-length(find(results.after_fall(:,1)));
+            
+            %start_falling = length(results.after_fall(:,1))-length(find(results.after_fall(:,1)));
             acumulated_time = 0;
             current_frame = 0;
-            for i = 2:start_falling
+            for i = 2:length(results.tout);
                 acumulated_time = acumulated_time + results.tout(i) - results.tout(i-1);
                 if acumulated_time >= 1/fps
                     ball_position = obj.rho(results.q(i,2));
@@ -449,18 +465,18 @@ classdef butterfly_robot_phi_varphi
                     acumulated_time = acumulated_time - 1/fps;
                 end
             end
-            for i = start_falling+1:length(results.after_fall(:,1))
-               acumulated_time = acumulated_time + results.tout(i)-results.tout(i-1);
-               if acumulated_time >= 1/fps
-                    frame.Matrix = makehgtform('zrotate',results.after_fall(i,1));
-                    ball.Matrix = makehgtform('translate', [results.after_fall(i,2);results.after_fall(i,3);0]);
-                    drawnow
-                    current_frame = current_frame + 1
-                    M(current_frame) = getframe;
-                    acumulated_time = acumulated_time - 1/fps;
-                end
-            end
-            h.Visible = 'on';
+%             for i = start_falling+1:length(results.after_fall(:,1))
+%                acumulated_time = acumulated_time + results.tout(i)-results.tout(i-1);
+%                if acumulated_time >= 1/fps
+%                     frame.Matrix = makehgtform('zrotate',results.after_fall(i,1));
+%                     ball.Matrix = makehgtform('translate', [results.after_fall(i,2);results.after_fall(i,3);0]);
+%                     drawnow
+%                     current_frame = current_frame + 1
+%                     M(current_frame) = getframe;
+%                     acumulated_time = acumulated_time - 1/fps;
+%                 end
+%             end
+%             h.Visible = 'on';
             movie(M,1,fps);
         end
         
