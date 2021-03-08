@@ -24,7 +24,7 @@ double b_mod(double x)
   } else if (x == 0.0) {
     r = 0.0;
   } else {
-    boolean_T rEQ0;
+    bool rEQ0;
     r = std::fmod(x, 3.1415926535897931);
     rEQ0 = (r == 0.0);
     if (!rEQ0) {

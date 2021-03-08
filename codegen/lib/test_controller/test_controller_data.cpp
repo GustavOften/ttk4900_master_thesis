@@ -15,6 +15,6 @@
 #include "test_controller.h"
 
 // Variable Definitions
-boolean_T isInitialized_test_controller = false;
+bool isInitialized_test_controller = false;
 
 // End of code generation (test_controller_data.cpp)

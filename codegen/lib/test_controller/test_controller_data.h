@@ -19,7 +19,7 @@
 #include "test_controller_types.h"
 
 // Variable Declarations
-extern boolean_T isInitialized_test_controller;
+extern bool isInitialized_test_controller;
 
 #endif
 

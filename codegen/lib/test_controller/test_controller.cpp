@@ -169,7 +169,7 @@ double test_controller(double theta, double varphi, double dtheta, double
   } else if (varphi == 0.0) {
     d_gamma = 0.0;
   } else {
-    boolean_T rEQ0;
+    bool rEQ0;
     d_gamma = std::fmod(varphi, 6.2831853071795862);
     rEQ0 = (d_gamma == 0.0);
     if (!rEQ0) {
