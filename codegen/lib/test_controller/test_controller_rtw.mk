@@ -2,7 +2,7 @@
 ## Makefile generated for MATLAB file/project 'test_controller'. 
 ## 
 ## Makefile     : test_controller_rtw.mk
-## Generated on : Wed Mar 10 18:20:01 2021
+## Generated on : Wed Mar 10 18:29:36 2021
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:
@@ -30,7 +30,7 @@ MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2020a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
 MASTER_ANCHOR_DIR         = 
 START_DIR                 = C:/Users/g-oft/OneDrive/Dokumenter/master/ttk4900_master_thesis/codegen/lib/test_controller
-TGT_FCN_LIB               = ISO_C
+TGT_FCN_LIB               = ISO_C++
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 
