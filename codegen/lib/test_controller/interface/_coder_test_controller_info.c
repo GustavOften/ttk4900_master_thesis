@@ -156,7 +156,7 @@ mxArray *emlrtMexFcnProperties(void)
   emlrtSetField(xEntryPoints, 0, "FullPath", emlrtMxCreateString(
     "C:\\Users\\g-oft\\OneDrive\\Dokumenter\\master\\ttk4900_master_thesis\\test_controller.m"));
   emlrtSetField(xEntryPoints, 0, "TimeStamp", emlrtMxCreateDoubleScalar
-                (738230.58011574077));
+                (738230.58399305551));
   xResult = emlrtCreateStructMatrix(1, 1, 4, propFieldName);
   emlrtSetField(xResult, 0, "Version", emlrtMxCreateString(
     "9.8.0.1323502 (R2020a)"));
