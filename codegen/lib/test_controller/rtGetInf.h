@@ -1,13 +1,13 @@
-//
-//  Academic License - for use in teaching, academic research, and meeting
-//  course requirements at degree granting institutions only.  Not for
-//  government, commercial, or other organizational use.
-//
-//  rtGetInf.h
-//
-//  Code generation for function 'test_controller'
-//
-
+/*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
+ * rtGetInf.h
+ *
+ * Code generation for function 'test_controller'
+ *
+ */
 
 #ifndef RTGETINF_H
 #define RTGETINF_H
@@ -30,4 +30,4 @@ extern "C" {
 #endif
 #endif
 
-// End of code generation (rtGetInf.h)
+/* End of code generation (rtGetInf.h) */

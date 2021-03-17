@@ -1,13 +1,13 @@
-//
-//  Academic License - for use in teaching, academic research, and meeting
-//  course requirements at degree granting institutions only.  Not for
-//  government, commercial, or other organizational use.
-//
-//  rtGetNaN.h
-//
-//  Code generation for function 'test_controller'
-//
-
+/*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
+ * rtGetNaN.h
+ *
+ * Code generation for function 'test_controller'
+ *
+ */
 
 #ifndef RTGETNAN_H
 #define RTGETNAN_H
@@ -31,4 +31,4 @@ extern "C" {
 #endif
 #endif
 
-// End of code generation (rtGetNaN.h)
+/* End of code generation (rtGetNaN.h) */

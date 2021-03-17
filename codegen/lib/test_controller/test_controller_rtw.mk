@@ -2,7 +2,7 @@
 ## Makefile generated for MATLAB file/project 'test_controller'. 
 ## 
 ## Makefile     : test_controller_rtw.mk
-## Generated on : Wed Mar 10 18:29:36 2021
+## Generated on : Wed Mar 17 16:30:43 2021
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:
@@ -30,7 +30,7 @@ MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2020a/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
 MASTER_ANCHOR_DIR         = 
 START_DIR                 = C:/Users/g-oft/OneDrive/Dokumenter/master/ttk4900_master_thesis/codegen/lib/test_controller
-TGT_FCN_LIB               = ISO_C++
+TGT_FCN_LIB               = ISO_C
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 
@@ -188,7 +188,7 @@ DEFINES = $(DEFINES_) $(DEFINES_CUSTOM) $(DEFINES_STANDARD)
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/test_controller_data.cpp $(START_DIR)/test_controller_initialize.cpp $(START_DIR)/test_controller_terminate.cpp $(START_DIR)/test_controller.cpp $(START_DIR)/mod.cpp
+SRCS = $(START_DIR)/rt_nonfinite.c $(START_DIR)/rtGetNaN.c $(START_DIR)/rtGetInf.c $(START_DIR)/test_controller_data.c $(START_DIR)/test_controller_initialize.c $(START_DIR)/test_controller_terminate.c $(START_DIR)/test_controller.c $(START_DIR)/mod.c
 
 ALL_SRCS = $(SRCS)
 
@@ -339,36 +339,36 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rt_nonfinite.obj : $(START_DIR)/rt_nonfinite.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+rt_nonfinite.obj : $(START_DIR)/rt_nonfinite.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-rtGetNaN.obj : $(START_DIR)/rtGetNaN.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+rtGetNaN.obj : $(START_DIR)/rtGetNaN.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-rtGetInf.obj : $(START_DIR)/rtGetInf.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+rtGetInf.obj : $(START_DIR)/rtGetInf.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-test_controller_data.obj : $(START_DIR)/test_controller_data.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+test_controller_data.obj : $(START_DIR)/test_controller_data.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-test_controller_initialize.obj : $(START_DIR)/test_controller_initialize.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+test_controller_initialize.obj : $(START_DIR)/test_controller_initialize.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-test_controller_terminate.obj : $(START_DIR)/test_controller_terminate.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+test_controller_terminate.obj : $(START_DIR)/test_controller_terminate.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-test_controller.obj : $(START_DIR)/test_controller.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+test_controller.obj : $(START_DIR)/test_controller.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-mod.obj : $(START_DIR)/mod.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+mod.obj : $(START_DIR)/mod.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
 ###########################################################################
