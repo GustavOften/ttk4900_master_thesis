@@ -1,54 +1,51 @@
-/*
- * Academic License - for use in teaching, academic research, and meeting
- * course requirements at degree granting institutions only.  Not for
- * government, commercial, or other organizational use.
- *
- * test_controller.c
- *
- * Code generation for function 'test_controller'
- *
- */
+//
+//  Academic License - for use in teaching, academic research, and meeting
+//  course requirements at degree granting institutions only.  Not for
+//  government, commercial, or other organizational use.
+//
+//  test_controller.cpp
+//
+//  Code generation for function 'test_controller'
+//
 
-/* Include files */
+
+// Include files
 #include "test_controller.h"
 #include "mod.h"
 #include "rt_nonfinite.h"
 #include "test_controller_data.h"
 #include "test_controller_initialize.h"
+#include <cmath>
 #include <math.h>
 
-/* Type Definitions */
-#ifndef typedef_struct_T
-#define typedef_struct_T
-
-typedef struct {
+// Type Definitions
+struct struct_T
+{
   double d_phi_star[10000];
   double n_riccati;
   double n_varphi;
   double riccati_sol[160000];
   double varphi_to_phi[10000];
-} struct_T;
+};
 
-#endif                                 /*typedef_struct_T*/
-
-/* Variable Definitions */
+// Variable Definitions
 static struct_T solutions;
 static double integral_term;
 
-/* Function Declarations */
+// Function Declarations
 static double rt_powd_snf(double u0, double u1);
 
-/* Function Definitions */
+// Function Definitions
 static double rt_powd_snf(double u0, double u1)
 {
   double y;
-  double d;
-  double d1;
   if (rtIsNaN(u0) || rtIsNaN(u1)) {
     y = rtNaN;
   } else {
-    d = fabs(u0);
-    d1 = fabs(u1);
+    double d;
+    double d1;
+    d = std::abs(u0);
+    d1 = std::abs(u1);
     if (rtIsInf(u1)) {
       if (d == 1.0) {
         y = 1.0;
@@ -74,8 +71,8 @@ static double rt_powd_snf(double u0, double u1)
     } else if (u1 == 2.0) {
       y = u0 * u0;
     } else if ((u1 == 0.5) && (u0 >= 0.0)) {
-      y = sqrt(u0);
-    } else if ((u0 < 0.0) && (u1 > floor(u1))) {
+      y = std::sqrt(u0);
+    } else if ((u0 < 0.0) && (u1 > std::floor(u1))) {
       y = rtNaN;
     } else {
       y = pow(u0, u1);
@@ -126,7 +123,6 @@ double test_controller(double theta, double varphi, double dtheta, double
   double d_tau[3];
   double dd_tau[3];
   double b_gamma;
-  signed char i1;
   static const signed char b_a[9] = { 0, 1, 0, -1, 0, 0, 0, 0, 0 };
 
   static const signed char b[3] = { 1, 0, 0 };
@@ -136,8 +132,6 @@ double test_controller(double theta, double varphi, double dtheta, double
   double d_s;
   double dd_s;
   double d_sf;
-  int riccati_sol_0_tmp;
-  int b_riccati_sol_0_tmp;
   double riccati_sol_0[16];
   double epsilon[4];
   static const signed char iv[3] = { 0, 0, 1 };
@@ -146,46 +140,48 @@ double test_controller(double theta, double varphi, double dtheta, double
     test_controller_initialize();
   }
 
-  /* Constant for describing the butterfly frame */
-  /* Constant for describing the butterfly frame */
-  /* Gravity */
-  /* Mass moment of inertia of the ball */
-  /* Mass moment of inertia of the frame, from article. */
-  /* Mass of the ball */
-  /* Radius of the ball */
-  Theta_tmp = sin(2.0 * varphi);
-  b_Theta_tmp = sin(4.0 * varphi);
-  c_Theta_tmp = sin(6.0 * varphi);
-  d_Theta_tmp = sin(8.0 * varphi);
-  Theta = -0.6012854 * atan(((1.415366 * Theta_tmp + 0.3964811 * b_Theta_tmp) +
-    0.05645448 * c_Theta_tmp) + 0.002783807 * d_Theta_tmp) + varphi;
-  a_tmp = ((1.415366 * sin(2.0 * varphi) + 0.3964811 * sin(4.0 * varphi)) +
-           0.05645448 * sin(6.0 * varphi)) + 0.002783807 * sin(8.0 * varphi);
-  b_d_Theta_tmp = ((2.830732 * cos(2.0 * varphi) + 1.5859244 * cos(4.0 * varphi))
-                   + 0.33872688 * cos(6.0 * varphi)) + 0.022270456 * cos(8.0 *
-    varphi);
+  // Constant for describing the butterfly frame
+  // Constant for describing the butterfly frame
+  // Gravity
+  // Mass moment of inertia of the ball
+  // Mass moment of inertia of the frame, from article.
+  // Mass of the ball
+  // Radius of the ball
+  Theta_tmp = std::sin(2.0 * varphi);
+  b_Theta_tmp = std::sin(4.0 * varphi);
+  c_Theta_tmp = std::sin(6.0 * varphi);
+  d_Theta_tmp = std::sin(8.0 * varphi);
+  Theta = -0.6012854 * std::atan(((1.415366 * Theta_tmp + 0.3964811 *
+    b_Theta_tmp) + 0.05645448 * c_Theta_tmp) + 0.002783807 * d_Theta_tmp) +
+    varphi;
+  a_tmp = ((1.415366 * std::sin(2.0 * varphi) + 0.3964811 * std::sin(4.0 *
+             varphi)) + 0.05645448 * std::sin(6.0 * varphi)) + 0.002783807 * std::
+    sin(8.0 * varphi);
+  b_d_Theta_tmp = ((2.830732 * std::cos(2.0 * varphi) + 1.5859244 * std::cos(4.0
+    * varphi)) + 0.33872688 * std::cos(6.0 * varphi)) + 0.022270456 * std::cos
+    (8.0 * varphi);
   c_d_Theta_tmp = a_tmp * a_tmp;
   d_Theta = -0.6012854 * b_d_Theta_tmp / (c_d_Theta_tmp + 1.0) + 1.0;
 
-  /*     %% Linear interpolation: */
-  phi = floor(b_mod(b_mod(varphi)) * solutions.n_varphi / 2.0 /
-              3.1415926535897931);
+  //     %% Linear interpolation:
+  phi = std::floor(b_mod(b_mod(varphi)) * solutions.n_varphi / 2.0 /
+                   3.1415926535897931);
   if ((phi + 1.0) + 1.0 > solutions.n_varphi) {
-    phi = solutions.varphi_to_phi[(int)solutions.n_varphi - 1];
+    phi = solutions.varphi_to_phi[static_cast<int>(solutions.n_varphi) - 1];
   } else {
-    phi = solutions.varphi_to_phi[(int)(phi + 1.0) - 1];
+    phi = solutions.varphi_to_phi[static_cast<int>(phi + 1.0) - 1];
 
-    /*  + (phi_1-phi_0)*(varphi-varphi_0)/(2*pi/n_varphi); */
+    //  + (phi_1-phi_0)*(varphi-varphi_0)/(2*pi/n_varphi);
   }
 
-  /*     %% e_phi  */
-  m_12 = sin(phi);
-  k = cos(phi);
+  //     %% e_phi
+  m_12 = std::sin(phi);
+  k = std::cos(phi);
 
-  /*     %% Delta */
-  dd_func_g = cos(2.0 * phi);
+  //     %% Delta
+  dd_func_g = std::cos(2.0 * phi);
   delta = 0.1095 - 0.0405 * dd_func_g;
-  phi = sin(2.0 * phi);
+  phi = std::sin(2.0 * phi);
   d_delta = 0.081 * phi;
   dd_delta = 0.162 * dd_func_g;
   scale = -0.324 * phi;
@@ -197,9 +193,9 @@ double test_controller(double theta, double varphi, double dtheta, double
   d_gamma = delta * m_12;
   ddd_delta_v[1] = ((scale * k + phi * -m_12) + dd_func_g * -k) + d_gamma;
   ddd_delta_v[2] = ((scale * 0.0 + phi * 0.0) + dd_func_g * 0.0) + delta * 0.0;
-  norm_d_delta_v = sqrt(d_delta * d_delta + delta * delta);
+  norm_d_delta_v = std::sqrt(d_delta * d_delta + delta * delta);
 
-  /*     %% Tau */
+  //     %% Tau
   delta_v[0] = d_gamma;
   d = delta * k;
   R_tmp_tmp = d_delta * m_12 + d;
@@ -257,45 +253,48 @@ double test_controller(double theta, double varphi, double dtheta, double
       dd_func_g;
   }
 
-  /*     %% Normal vector: */
-  /*     %% Rho : */
-  /*     %% Need to find varphi = g(phi) */
+  //     %% Normal vector:
+  //     %% Rho :
+  //     %% Need to find varphi = g(phi)
   phi = 0.0;
   dd_func_g = 0.0;
   d_gamma = 0.0;
   t = 0.0;
   for (b_i = 0; b_i < 3; b_i++) {
+    signed char i1;
     i1 = b_a[b_i + 3];
-    d_e_phi[b_i] = delta_v[b_i] + 0.010846773713874552 * (((double)b_a[b_i] *
-      tau[0] + (double)i1 * tau[1]) + 0.0 * tau[2]);
-    e_phi[b_i] = d_delta_v[b_i] + 0.010846773713874552 * (((double)b_a[b_i] *
-      d_tau[0] + (double)i1 * d_tau[1]) + 0.0 * d_tau[2]);
-    ddd_delta_v[b_i] = dd_delta_v[b_i] + 0.010846773713874552 * (((double)
-      b_a[b_i] * dd_tau[0] + (double)i1 * dd_tau[1]) + 0.0 * dd_tau[2]);
+    d_e_phi[b_i] = delta_v[b_i] + 0.010846773713874552 * ((static_cast<double>
+      (b_a[b_i]) * tau[0] + static_cast<double>(i1) * tau[1]) + 0.0 * tau[2]);
+    e_phi[b_i] = d_delta_v[b_i] + 0.010846773713874552 * ((static_cast<double>
+      (b_a[b_i]) * d_tau[0] + static_cast<double>(i1) * d_tau[1]) + 0.0 * d_tau
+      [2]);
+    ddd_delta_v[b_i] = dd_delta_v[b_i] + 0.010846773713874552 * ((static_cast<
+      double>(b_a[b_i]) * dd_tau[0] + static_cast<double>(i1) * dd_tau[1]) + 0.0
+      * dd_tau[2]);
     d = 0.010846773713874552 * tau[b_i];
-    phi += delta_v[b_i] * (double)b[b_i];
-    dd_func_g += d * (double)b_b[b_i];
-    d_gamma += delta_v[b_i] * (double)b_b[b_i];
-    t += d * (double)b[b_i];
+    phi += delta_v[b_i] * static_cast<double>(b[b_i]);
+    dd_func_g += d * static_cast<double>(b_b[b_i]);
+    d_gamma += delta_v[b_i] * static_cast<double>(b_b[b_i]);
+    t += d * static_cast<double>(b[b_i]);
   }
 
   b_gamma = phi - dd_func_g;
   d_delta = d_gamma + t;
 
-  /* func_g = atan2(gamma, psi); */
+  // func_g = atan2(gamma, psi);
   m_12 = b_gamma * b_gamma + d_delta * d_delta;
 
-  /*     %% s */
+  //     %% s
   scale = 3.3121686421112381E-170;
 
-  /*     %% s_f: */
+  //     %% s_f:
   d = 0.010846773713874552 * d_tau[0];
   dd_func_g = d * 0.0;
   dd_delta = d;
   d = 0.010846773713874552 * dd_tau[0];
   k = d * 0.0;
   delta = d;
-  phi = fabs(e_phi[0]);
+  phi = std::abs(e_phi[0]);
   if (phi > 3.3121686421112381E-170) {
     a = 1.0;
     scale = phi;
@@ -310,7 +309,7 @@ double test_controller(double theta, double varphi, double dtheta, double
   d = 0.010846773713874552 * dd_tau[1];
   k += d;
   delta += d * 0.0;
-  phi = fabs(e_phi[1]);
+  phi = std::abs(e_phi[1]);
   if (phi > scale) {
     t = scale / phi;
     a = a * t * t + 1.0;
@@ -326,7 +325,7 @@ double test_controller(double theta, double varphi, double dtheta, double
   d = 0.010846773713874552 * dd_tau[2];
   k += d * 0.0;
   delta += d * 0.0;
-  phi = fabs(e_phi[2]);
+  phi = std::abs(e_phi[2]);
   if (phi > scale) {
     t = scale / phi;
     a = a * t * t + 1.0;
@@ -344,7 +343,7 @@ double test_controller(double theta, double varphi, double dtheta, double
                 k) * d_delta - (((dd_delta_v[0] * 0.0 + dd_delta_v[1]) +
     dd_delta_v[2] * 0.0) + delta) * b_gamma) / m_12 - dd_func_g * (2.0 * b_gamma
     * d_gamma + 2.0 * d_delta * phi) / (m_12 * m_12);
-  a = scale * sqrt(a);
+  a = scale * std::sqrt(a);
   d_s = a / dd_delta;
   phi = rt_powd_snf(dd_delta, 3.0);
   t = dd_delta * dd_delta;
@@ -355,34 +354,34 @@ double test_controller(double theta, double varphi, double dtheta, double
                     + R_tmp_tmp * dd_delta_v[2]) / norm_d_delta_v / dd_delta -
     norm_d_delta_v * dd_func_g / phi;
 
-  /*     %% Kappa: */
+  //     %% Kappa:
   c_tmp = d_s * d_s;
 
-  /*      R = [cos(varphi) -sin(varphi) 0;sin(varphi) cos(varphi) 0;0 0 1]; */
-  /*      dR = [-sin(varphi) -cos(varphi) 0;cos(varphi) -sin(varphi) 0;0 0 0]; */
-  /*      ddR = [-cos(varphi) sin(varphi) 0;-sin(varphi) -cos(varphi) 0;0 0 0]; */
-  /*      c = -0.07; */
-  /*      gamma = c*sin(2*varphi-pi)*[1 0 0]*R*tau-[0 1 0]*R*tau; */
-  /*      psi = c*sin(2*varphi-pi)*[0 1 0]*R*tau+[1 0 0]*R*tau; */
-  /*      d_gamma = c*2*cos(2*varphi-pi)*[1 0 0]*R*tau + c*sin(2*varphi-pi)*[1 0 0]*dR*tau + c*sin(2*varphi-pi)*[1 0 0]*R*d_tau - [0 1 0]*dR*tau-[0 1 0]*R*d_tau; */
-  /*      d_psi = c*2*cos(2*varphi-pi)*[0 1 0]*R*tau + c*sin(2*varphi-pi)*[0 1 0]*dR*tau + c*sin(2*varphi-pi)*[0 1 0]*R*d_tau + [1 0 0]*dR*tau + [1 0 0]*R*d_tau; */
-  /*       */
-  /*      dd_gamma = -c*4*sin(2*varphi-pi)*[1 0 0]*R*tau + c*2*cos(2*varphi-pi)*[1 0 0]*dR*tau + c*2*cos(2*varphi-pi)*[1 0 0]*R*d_tau ...  */
-  /*          +c*2*cos(2*varphi-pi)*[1 0 0]*dR*tau + c*sin(2*varphi-pi)*[1 0 0]*ddR*tau + c*sin(2*varphi-pi)*[1 0 0]*dR*d_tau ... */
-  /*          + c*2*cos(2*varphi-pi)*[1 0 0]*R*d_tau + c*sin(2*varphi-pi)*[1 0 0]*dR*d_tau + c*sin(2*varphi-pi)*[1 0 0]*R*dd_tau ... */
-  /*          - [0 1 0]*ddR*tau - 2*[0 1 0]*dR*d_tau -[0 1 0]*R*dd_tau; */
-  /*       */
-  /*      dd_psi = -c*4*sin(2*varphi-pi)*[0 1 0]*R*tau + c*2*cos(2*varphi-pi)*[0 1 0]*dR*tau + c*2*cos(2*varphi-pi)*[0 1 0]*R*d_tau ... */
-  /*          + c*2*cos(2*varphi-pi)*[0 1 0]*dR*tau + c*sin(2*varphi-pi)*[0 1 0]*ddR*tau + c*sin(2*varphi-pi)*[0 1 0]*dR*d_tau ... */
-  /*          + c*2*cos(2*varphi-pi)*[0 1 0]*R*d_tau + c*sin(2*varphi-pi)*[0 1 0]*dR*d_tau + c*sin(2*varphi-pi)*[0 1 0]*R*dd_tau ... */
-  /*          + [1 0 0]*ddR*tau + 2*[1 0 0]*dR*d_tau + [1 0 0]*R*dd_tau; */
-  /*      Theta = varphi + atan(gamma/psi); */
-  /*      d_Theta = (-gamma*d_psi + psi^2 + d_gamma*psi + gamma^2)*1/(psi^2 + gamma^2); */
-  /*      dd_Theta = ((psi^3 + psi*gamma^2)*dd_gamma + (-psi^2*gamma - gamma^3)*dd_psi - 2*(psi*d_psi + gamma*d_gamma)*(d_gamma*psi - gamma*d_psi))*1/(psi^2 + gamma^2)^2; */
-  /*       */
-  /*     %% Rotations: */
-  a = sin(Theta);
-  R_tmp_tmp = cos(Theta);
+  //      R = [cos(varphi) -sin(varphi) 0;sin(varphi) cos(varphi) 0;0 0 1];
+  //      dR = [-sin(varphi) -cos(varphi) 0;cos(varphi) -sin(varphi) 0;0 0 0];
+  //      ddR = [-cos(varphi) sin(varphi) 0;-sin(varphi) -cos(varphi) 0;0 0 0];
+  //      c = -0.07;
+  //      gamma = c*sin(2*varphi-pi)*[1 0 0]*R*tau-[0 1 0]*R*tau;
+  //      psi = c*sin(2*varphi-pi)*[0 1 0]*R*tau+[1 0 0]*R*tau;
+  //      d_gamma = c*2*cos(2*varphi-pi)*[1 0 0]*R*tau + c*sin(2*varphi-pi)*[1 0 0]*dR*tau + c*sin(2*varphi-pi)*[1 0 0]*R*d_tau - [0 1 0]*dR*tau-[0 1 0]*R*d_tau; 
+  //      d_psi = c*2*cos(2*varphi-pi)*[0 1 0]*R*tau + c*sin(2*varphi-pi)*[0 1 0]*dR*tau + c*sin(2*varphi-pi)*[0 1 0]*R*d_tau + [1 0 0]*dR*tau + [1 0 0]*R*d_tau; 
+  //
+  //      dd_gamma = -c*4*sin(2*varphi-pi)*[1 0 0]*R*tau + c*2*cos(2*varphi-pi)*[1 0 0]*dR*tau + c*2*cos(2*varphi-pi)*[1 0 0]*R*d_tau ...  
+  //          +c*2*cos(2*varphi-pi)*[1 0 0]*dR*tau + c*sin(2*varphi-pi)*[1 0 0]*ddR*tau + c*sin(2*varphi-pi)*[1 0 0]*dR*d_tau ... 
+  //          + c*2*cos(2*varphi-pi)*[1 0 0]*R*d_tau + c*sin(2*varphi-pi)*[1 0 0]*dR*d_tau + c*sin(2*varphi-pi)*[1 0 0]*R*dd_tau ... 
+  //          - [0 1 0]*ddR*tau - 2*[0 1 0]*dR*d_tau -[0 1 0]*R*dd_tau;
+  //
+  //      dd_psi = -c*4*sin(2*varphi-pi)*[0 1 0]*R*tau + c*2*cos(2*varphi-pi)*[0 1 0]*dR*tau + c*2*cos(2*varphi-pi)*[0 1 0]*R*d_tau ... 
+  //          + c*2*cos(2*varphi-pi)*[0 1 0]*dR*tau + c*sin(2*varphi-pi)*[0 1 0]*ddR*tau + c*sin(2*varphi-pi)*[0 1 0]*dR*d_tau ... 
+  //          + c*2*cos(2*varphi-pi)*[0 1 0]*R*d_tau + c*sin(2*varphi-pi)*[0 1 0]*dR*d_tau + c*sin(2*varphi-pi)*[0 1 0]*R*dd_tau ... 
+  //          + [1 0 0]*ddR*tau + 2*[1 0 0]*dR*d_tau + [1 0 0]*R*dd_tau;
+  //      Theta = varphi + atan(gamma/psi);
+  //      d_Theta = (-gamma*d_psi + psi^2 + d_gamma*psi + gamma^2)*1/(psi^2 + gamma^2); 
+  //      dd_Theta = ((psi^3 + psi*gamma^2)*dd_gamma + (-psi^2*gamma - gamma^3)*dd_psi - 2*(psi*d_psi + gamma*d_gamma)*(d_gamma*psi - gamma*d_psi))*1/(psi^2 + gamma^2)^2; 
+  //
+  //     %% Rotations:
+  a = std::sin(Theta);
+  R_tmp_tmp = std::cos(Theta);
   e_phi[2] = d_e_phi[0] * tau[1] - d_e_phi[1] * tau[0];
   d_gamma = d_s * e_phi[2];
   dd_delta = d_gamma - d_sf * 5.48E-7 / 0.010846773713874552 / 0.003;
@@ -394,12 +393,15 @@ double test_controller(double theta, double varphi, double dtheta, double
   dd_func_g = d_sf * d_sf * 5.48E-7;
   d_delta = 0.003 * (c_tmp + dd_func_g / 0.00011765249999999994 / 0.003);
 
-  /*     %% Linear interpolations: */
-  phi = floor(c_mod(c_mod(varphi)) * solutions.n_riccati / 3.1415926535897931);
+  //     %% Linear interpolations:
+  phi = std::floor(c_mod(c_mod(varphi)) * solutions.n_riccati /
+                   3.1415926535897931);
   if ((phi + 1.0) + 1.0 > solutions.n_riccati) {
-    b_i = (int)solutions.n_riccati - 1;
+    b_i = static_cast<int>(solutions.n_riccati) - 1;
     phi = solutions.d_phi_star[b_i];
     for (i = 0; i < 4; i++) {
+      int riccati_sol_0_tmp;
+      int b_riccati_sol_0_tmp;
       riccati_sol_0_tmp = i << 2;
       b_riccati_sol_0_tmp = riccati_sol_0_tmp + (b_i << 4);
       riccati_sol_0[riccati_sol_0_tmp] =
@@ -412,9 +414,11 @@ double test_controller(double theta, double varphi, double dtheta, double
         solutions.riccati_sol[b_riccati_sol_0_tmp + 3];
     }
   } else {
-    b_i = (int)(phi + 1.0) - 1;
+    b_i = static_cast<int>(phi + 1.0) - 1;
     phi = solutions.d_phi_star[b_i];
     for (i = 0; i < 4; i++) {
+      int riccati_sol_0_tmp;
+      int b_riccati_sol_0_tmp;
       riccati_sol_0_tmp = i << 2;
       b_riccati_sol_0_tmp = riccati_sol_0_tmp + (b_i << 4);
       riccati_sol_0[riccati_sol_0_tmp] =
@@ -427,16 +431,16 @@ double test_controller(double theta, double varphi, double dtheta, double
         solutions.riccati_sol[b_riccati_sol_0_tmp + 3];
     }
 
-    /*  + (d_phi_star_1-d_phi_star_0).*(varphi-varphi_0)/(pi/n_riccati_sol); */
-    /*  riccati_sol_0 + (riccati_sol_1-riccati_sol_0).*(varphi-varphi_0)/(pi/n_riccati_sol); */
+    //  + (d_phi_star_1-d_phi_star_0).*(varphi-varphi_0)/(pi/n_riccati_sol);
+    //  riccati_sol_0 + (riccati_sol_1-riccati_sol_0).*(varphi-varphi_0)/(pi/n_riccati_sol); 
   }
 
-  /*      beta = m_b*((d_s*rhoxtau(3)-d_sf*J_s/R_b/m_b)*dd_Theta-rho'*tau*d_s*d_Theta^2 ... */
-  /*          + d_s*dd_s + d_sf*dd_sf*J_s/R_b/m_b/R_b); */
-  /*      gamma = m_b*[0 g 0]*R*tau*d_s; */
-  /*      g_y_dot = m_b*d_s*tau'*rho*(2*d_Theta*d_varphi); */
-  /*      g_y = -get_ds(varphi)*m_b*g*[cos(get_theta(varphi)) -sin(get_theta(varphi)) 0]*get_tau(varphi); */
-  /*       */
+  //      beta = m_b*((d_s*rhoxtau(3)-d_sf*J_s/R_b/m_b)*dd_Theta-rho'*tau*d_s*d_Theta^2 ... 
+  //          + d_s*dd_s + d_sf*dd_sf*J_s/R_b/m_b/R_b);
+  //      gamma = m_b*[0 g 0]*R*tau*d_s;
+  //      g_y_dot = m_b*d_s*tau'*rho*(2*d_Theta*d_varphi);
+  //      g_y = -get_ds(varphi)*m_b*g*[cos(get_theta(varphi)) -sin(get_theta(varphi)) 0]*get_tau(varphi); 
+  //
   integral_term += phi * 0.01;
   epsilon[0] = theta - Theta;
   b_gamma = d_Theta * dvarphi;
@@ -466,7 +470,7 @@ double test_controller(double theta, double varphi, double dtheta, double
   b_dd_delta_v[3] = -R_tmp_tmp;
   b_dd_delta_v[6] = 0.0;
   b_dd_delta_v[1] = R_tmp_tmp;
-  b_dd_delta_v[4] = -sin(Theta);
+  b_dd_delta_v[4] = -std::sin(Theta);
   b_dd_delta_v[7] = 0.0;
   scale = 0.0;
   for (i = 0; i < 3; i++) {
@@ -499,7 +503,7 @@ double test_controller(double theta, double varphi, double dtheta, double
     dvarphi)) * dvarphi)) + (1.0 / k * (0.003 * scale) + -(0.003 * (a * d_s))));
 }
 
-void test_controller_init(void)
+void test_controller_init()
 {
   static const struct_T r = { { 0.224, 0.22399941258152367, 0.22399882516304739,
       0.22399823774457106, 0.22399765032609475, 0.22399706290761845,
@@ -3833,9 +3837,9 @@ void test_controller_init(void)
       0.22399321268967659, 0.22399468494091215, 0.22399615719214769,
       0.22399638727605187, 0.22399633144284731, 0.22399627560964272,
       0.22399621977643813, 0.22399616394323357, 0.22399610811002899,
-      0.2239960522768244, 0.22399599644361984, 0.22399594061041528, 0.224 },/* d_phi_star */
-    10000.0,                           /* n_riccati */
-    10000.0,                           /* n_varphi */
+      0.2239960522768244, 0.22399599644361984, 0.22399594061041528, 0.224 },// d_phi_star 
+    10000.0,                           // n_riccati
+    10000.0,                           // n_varphi
     { 353.71900604883888, 55.516052899643469, -36.27385271443967,
       -36.27385271443967, 55.516052899643469, 12.585931835510944,
       -4.8568467528369457, -4.8568467528369457, -36.27385271443967,
@@ -56994,7 +56998,7 @@ void test_controller_init(void)
       12.585931835510944, -4.8568467528369457, -4.8568467528369457,
       -36.27385271443967, -4.8568467528369457, 5.8152282305566141,
       5.8152282305566141, -2.9271836424214603, -0.38094564370894091,
-      0.49886046191336508, 1.0434915296134271 },/* riccati_sol */
+      0.49886046191336508, 1.0434915296134271 },// riccati_sol
     { 0.0, 0.00092266376844709795, 0.0018453122530466049, 0.0027679342404706743,
       0.0036905185173914589, 0.0046130538704811114, 0.0055355290864117866,
       0.0064579329518556364, 0.007380254253484814, 0.0083024817779714741,
@@ -60294,11 +60298,11 @@ void test_controller_init(void)
       6.2730386965373812, 6.2739607028675994, 6.2748828254016145,
       6.2758050529261009, 6.2767273742277307, 6.2776497780931741,
       6.2785722533091048, 6.2794947886621957, 6.2804173729391159,
-      6.28133999492654, 6.28226264341114, 6.2831853071795862 }/* varphi_to_phi */
+      6.28133999492654, 6.28226264341114, 6.2831853071795862 }// varphi_to_phi
   };
 
   solutions = r;
   integral_term = 0.0;
 }
 
-/* End of code generation (test_controller.c) */
+// End of code generation (test_controller.cpp)

@@ -3,7 +3,7 @@
 //  course requirements at degree granting institutions only.  Not for
 //  government, commercial, or other organizational use.
 //
-//  main.h
+//  main.cpp
 //
 //  Code generation for function 'main'
 //
@@ -33,18 +33,45 @@
 // otherwise use them as required by your application.
 //
 //***********************************************************************
-#ifndef MAIN_H
-#define MAIN_H
 
 // Include files
-#include <cstddef>
-#include <cstdlib>
-#include "rtwtypes.h"
-#include "test_controller_types.h"
+#include "main.h"
+#include "rt_nonfinite.h"
+#include "test_controller.h"
+#include "test_controller_terminate.h"
 
 // Function Declarations
-extern int main(int argc, const char * const argv[]);
+static double argInit_real_T();
+static void main_test_controller();
 
-#endif
+// Function Definitions
+static double argInit_real_T()
+{
+  return 0.0;
+}
 
-// End of code generation (main.h)
+static void main_test_controller()
+{
+  double theta_tmp;
+
+  // Initialize function 'test_controller' input arguments.
+  theta_tmp = argInit_real_T();
+
+  // Call the entry-point 'test_controller'.
+  theta_tmp = test_controller(theta_tmp, theta_tmp, theta_tmp, theta_tmp);
+}
+
+int main(int, const char * const [])
+{
+  // The initialize function is being called automatically from your entry-point function. So, a call to initialize is not included here. 
+  // Invoke the entry-point functions.
+  // You can call entry-point functions multiple times.
+  main_test_controller();
+
+  // Terminate the application.
+  // You do not need to do this more than one time.
+  test_controller_terminate();
+  return 0;
+}
+
+// End of code generation (main.cpp)
