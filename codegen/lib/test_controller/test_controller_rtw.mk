@@ -2,7 +2,7 @@
 ## Makefile generated for MATLAB file/project 'test_controller'. 
 ## 
 ## Makefile     : test_controller_rtw.mk
-## Generated on : Wed Mar 17 16:33:28 2021
+## Generated on : Fri Mar 19 13:54:06 2021
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:
@@ -188,7 +188,7 @@ DEFINES = $(DEFINES_) $(DEFINES_CUSTOM) $(DEFINES_STANDARD)
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/test_controller_data.cpp $(START_DIR)/test_controller_initialize.cpp $(START_DIR)/test_controller_terminate.cpp $(START_DIR)/test_controller.cpp $(START_DIR)/mod.cpp
+SRCS = $(START_DIR)/rt_nonfinite.cpp $(START_DIR)/rtGetNaN.cpp $(START_DIR)/rtGetInf.cpp $(START_DIR)/test_controller_data.cpp $(START_DIR)/test_controller_initialize.cpp $(START_DIR)/test_controller_terminate.cpp $(START_DIR)/test_controller.cpp
 
 ALL_SRCS = $(SRCS)
 
@@ -196,7 +196,7 @@ ALL_SRCS = $(SRCS)
 ## OBJECTS
 ###########################################################################
 
-OBJS = rt_nonfinite.obj rtGetNaN.obj rtGetInf.obj test_controller_data.obj test_controller_initialize.obj test_controller_terminate.obj test_controller.obj mod.obj
+OBJS = rt_nonfinite.obj rtGetNaN.obj rtGetInf.obj test_controller_data.obj test_controller_initialize.obj test_controller_terminate.obj test_controller.obj
 
 ALL_OBJS = $(OBJS)
 
@@ -364,10 +364,6 @@ test_controller_terminate.obj : $(START_DIR)/test_controller_terminate.cpp
 
 
 test_controller.obj : $(START_DIR)/test_controller.cpp
-	$(CPP) $(CPPFLAGS) -o "$@" "$<"
-
-
-mod.obj : $(START_DIR)/mod.cpp
 	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
