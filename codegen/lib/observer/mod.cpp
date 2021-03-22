@@ -17,6 +17,10 @@
 #include <cmath>
 
 // Function Definitions
+
+//
+//
+
 double b_mod(double x)
 {
   double r;
