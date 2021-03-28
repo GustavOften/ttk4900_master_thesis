@@ -95,6 +95,7 @@ static double rt_powd_snf(double u0, double u1)
 double test_controller(double theta, double varphi, double dtheta, double
   dvarphi)
 {
+  double u;
   double Theta_tmp_tmp;
   double b_Theta_tmp_tmp;
   double c_Theta_tmp_tmp;
@@ -574,18 +575,25 @@ double test_controller(double theta, double varphi, double dtheta, double
       tau[low_ip1];
   }
 
-  return k * ((q + ((e_phi_tmp_tmp * (((0.003 * dd_e_phi[0] * tau[0] + 0.003 *
+  u = k * ((q + ((e_phi_tmp_tmp * (((0.003 * dd_e_phi[0] * tau[0] + 0.003 *
     dd_e_phi[1] * tau[1]) + 0.003 * dd_e_phi[2] * tau[2]) * d_s * d_phi_star) +
-                     -(((-0.003 * dd_e_phi[0] * tau[0] + -0.003 * dd_e_phi[1] *
-    tau[1]) + -0.003 * dd_e_phi[2] * tau[2]) * d_s * d_Theta * d_phi_star)) *
-                    (d_Theta * d_phi_star + d_e_phi[1]) + (e_phi_tmp_tmp *
-    (0.003 * (((dd_e_phi[0] * tau[0] + dd_e_phi[1] * tau[1]) + dd_e_phi[2] *
-               tau[2]) * d_s * d_Theta * d_phi_star + ((dd_s * e_phi[2] - dd_sf *
-    4.44556451612904E-7 / 0.0094868329805051412 / 0.003) + c_tmp * (dd_e_phi[0] *
-    ddd_delta_v[1] - dd_e_phi[1] * ddd_delta_v[0])) * d_phi_star)) + -(0.003 *
-    (d_s * dd_s + d_sf * dd_sf * 4.44556451612904E-7 / 9.000000000000006E-5 /
-     0.003) * d_phi_star)) * d_phi_star)) + (1.0 / k * (0.003 * d_func_g) +
-    -(0.003 * (b_gamma * d_s))));
+                  -(((-0.003 * dd_e_phi[0] * tau[0] + -0.003 * dd_e_phi[1] *
+                      tau[1]) + -0.003 * dd_e_phi[2] * tau[2]) * d_s * d_Theta *
+                    d_phi_star)) * (d_Theta * d_phi_star + d_e_phi[1]) +
+                 (e_phi_tmp_tmp * (0.003 * (((dd_e_phi[0] * tau[0] + dd_e_phi[1]
+    * tau[1]) + dd_e_phi[2] * tau[2]) * d_s * d_Theta * d_phi_star + ((dd_s *
+    e_phi[2] - dd_sf * 4.44556451612904E-7 / 0.0094868329805051412 / 0.003) +
+    c_tmp * (dd_e_phi[0] * ddd_delta_v[1] - dd_e_phi[1] * ddd_delta_v[0])) *
+    d_phi_star)) + -(0.003 * (d_s * dd_s + d_sf * dd_sf * 4.44556451612904E-7 /
+    9.000000000000006E-5 / 0.003) * d_phi_star)) * d_phi_star)) + (1.0 / k *
+            (0.003 * d_func_g) + -(0.003 * (b_gamma * d_s))));
+  if (u > 0.0) {
+    u += 0.0026;
+  } else {
+    u -= 0.0032;
+  }
+
+  return u;
 }
 
 void test_controller_init()
