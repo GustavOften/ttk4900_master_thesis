@@ -92,6 +92,9 @@ static double rt_powd_snf(double u0, double u1)
   return y;
 }
 
+//
+//  function u = test_controller(theta,varphi,dtheta,dvarphi)
+
 double test_controller(double theta, double varphi, double dtheta, double
   dvarphi)
 {
@@ -153,21 +156,41 @@ double test_controller(double theta, double varphi, double dtheta, double
     test_controller_initialize();
   }
 
+  // 'test_controller:2' q = [theta;varphi];
+  // 'test_controller:3' dq = [dtheta;dvarphi];
+  // 'test_controller:5' if isempty(spline_phi)
   //      a = 0.1095; %Constant for describing the butterfly frame
   //      b = 0.0405; %Constant for describing the butterfly frame
+  // 'test_controller:17' a = 0.1148;
   // Constant for describing the butterfly frame, measured
+  // 'test_controller:18' b = 0.0390;
   // Constant for describing the butterfly frame, measured
+  // 'test_controller:19' g = 9.81;
   // Gravity
   // J_s = 4.44556451612904e-07;%5.48e-7;%5.48e-7; %Mass moment of inertia of the ball  
+  // 'test_controller:21' J_f = 8.8015e-04;
   // Mass moment of inertia of the frame, from article.
+  // 'test_controller:22' m_b = 3.0e-3;
   // Mass of the ball
   // R_b = sqrt(16.55e-3^2-12.5e-3^2); From paper.
+  // 'test_controller:24' r_b = 16.5e-3;
+  // 'test_controller:25' J_s = 2/3*m_b*r_b^2;
+  // 'test_controller:26' R_b = sqrt(r_b^2-13.5e-3^2);
   // Measured on the robot
+  // 'test_controller:29' varphi = q(2);
   // c1= -6.012854e-01; c2= 1.415366e+00; c3= 3.964811e-01; c4= 5.645448e-02; c5= 2.783807e-03; 
+  // 'test_controller:32' c1= -7.623930e-01;
+  // 'test_controller:32' c2= 8.544887e-01;
+  // 'test_controller:32' c3= 1.943789e-01;
+  // 'test_controller:32' c4= 7.307691e-02;
+  // 'test_controller:32' c5= 2.331691e-02;
+  // 'test_controller:33' Theta = c1*atan(c2*sin(2*varphi)+c3*sin(4*varphi)+c4*sin(6*varphi)+c5*sin(8*varphi))+varphi; 
   Theta_tmp_tmp = std::sin(2.0 * varphi);
   b_Theta_tmp_tmp = std::sin(4.0 * varphi);
   c_Theta_tmp_tmp = std::sin(6.0 * varphi);
   d_Theta_tmp_tmp = std::sin(8.0 * varphi);
+
+  // 'test_controller:34' d_Theta = c1*(2*c2*cos(2*varphi) + 4*c3*cos(4*varphi) + 6*c4*cos(6*varphi) + 8*c5*cos(8*varphi))/((c2*sin(2*varphi) + c3*sin(4*varphi) + c4*sin(6*varphi) + c5*sin(8*varphi))^2 + 1) + 1; 
   a_tmp = ((0.8544887 * Theta_tmp_tmp + 0.1943789 * b_Theta_tmp_tmp) +
            0.07307691 * c_Theta_tmp_tmp) + 0.02331691 * d_Theta_tmp_tmp;
   d_Theta_tmp = ((1.7089774 * std::cos(2.0 * varphi) + 0.7775156 * std::cos(4.0 *
@@ -175,6 +198,9 @@ double test_controller(double theta, double varphi, double dtheta, double
     cos(8.0 * varphi);
   b_d_Theta_tmp = a_tmp * a_tmp;
   d_Theta = -0.762393 * d_Theta_tmp / (b_d_Theta_tmp + 1.0) + 1.0;
+
+  // 'test_controller:35' dd_Theta = c1*(-4*c2*sin(2*varphi) - 16*c3*sin(4*varphi) - 36*c4*sin(6*varphi) - 64*c5*sin(8*varphi))/((c2*sin(2*varphi) + c3*sin(4*varphi) + c4*sin(6*varphi) + c5*sin(8*varphi))^2 + 1) - 2*c1*(2*c2*cos(2*varphi) + 4*c3*cos(4*varphi) + 6*c4*cos(6*varphi) + 8*c5*cos(8*varphi))^2*(c2*sin(2*varphi) + c3*sin(4*varphi) + c4*sin(6*varphi) + c5*sin(8*varphi))/((c2*sin(2*varphi) + c3*sin(4*varphi) + c4*sin(6*varphi) + c5*sin(8*varphi))^2 + 1)^2; 
+  // 'test_controller:37' phi = ppval(spline_phi,mod(varphi,2*pi));
   if (rtIsNaN(varphi) || rtIsInf(varphi)) {
     phi = rtNaN;
   } else if (varphi == 0.0) {
@@ -215,7 +241,9 @@ double test_controller(double theta, double varphi, double dtheta, double
                + spline_phi.coefs[low_i + 998]) + spline_phi.coefs[low_i + 1497];
   }
 
+  // 'test_controller:38' phi = phi(1,1);
   // Need to do this because of simulink coder...
+  // 'test_controller:39' d_phi_star = ppval(spline_dphi, mod(varphi,pi));
   if (rtIsNaN(varphi) || rtIsInf(varphi)) {
     d_phi_star_tmp = rtNaN;
   } else if (varphi == 0.0) {
@@ -260,18 +288,38 @@ double test_controller(double theta, double varphi, double dtheta, double
   }
 
   // d_phi_star = d_phi_star(1,1);
+  // 'test_controller:41' riccati_sol = ppval(spline_riccati, mod(varphi,pi));
+  // 'test_controller:42' riccati_sol = reshape(riccati_sol,3,3);
   //     %% e_phi
+  // 'test_controller:45' e_phi = [sin(phi);cos(phi);0];
   m_12 = std::sin(phi);
   e_phi_tmp_tmp = std::cos(phi);
 
+  // 'test_controller:46' d_e_phi = [cos(phi);-sin(phi);0];
+  // 'test_controller:47' dd_e_phi = [-sin(phi);-cos(phi);0];
+  // 'test_controller:48' ddd_e_phi = [-cos(phi);sin(phi);0];
   //     %% Delta
+  // 'test_controller:51' delta = (a-b*cos(2*phi));
   q = std::cos(2.0 * phi);
   delta = 0.1148 - 0.039 * q;
+
+  // 'test_controller:52' delta_v = delta*e_phi;
+  // 'test_controller:53' d_delta = b*2*sin(2*phi);
   phi = std::sin(2.0 * phi);
   d_delta = 0.078 * phi;
+
+  // 'test_controller:54' dd_delta = b*4*cos(2*phi);
   dd_delta = 0.156 * q;
+
+  // 'test_controller:55' ddd_delta = -b*8*sin(2*phi);
   d_func_g = -0.312 * phi;
+
+  // 'test_controller:56' d_delta_v = d_delta*e_phi+delta*d_e_phi;
+  // 'test_controller:57' dd_delta_v = dd_delta*e_phi+2*d_delta*d_e_phi+delta*dd_e_phi; 
   b_gamma = 2.0 * d_delta;
+
+  // 'test_controller:58' ddd_delta_v = ddd_delta*e_phi+ 3*dd_delta*d_e_phi + ... 
+  // 'test_controller:59'         3*d_delta*dd_e_phi + delta*ddd_e_phi;
   q = 3.0 * dd_delta;
   phi = 3.0 * d_delta;
   M_idx_0 = delta * -e_phi_tmp_tmp;
@@ -281,9 +329,12 @@ double test_controller(double theta, double varphi, double dtheta, double
   ddd_delta_v[1] = ((d_func_g * e_phi_tmp_tmp + q * -m_12) + phi *
                     -e_phi_tmp_tmp) + d_gamma;
   ddd_delta_v[2] = ((d_func_g * 0.0 + q * 0.0) + phi * 0.0) + delta * 0.0;
+
+  // 'test_controller:60' norm_d_delta_v = sqrt(d_delta^2+delta^2);
   norm_d_delta_v = std::sqrt(d_delta * d_delta + delta * delta);
 
   //     %% Tau
+  // 'test_controller:63' tau = d_delta_v/norm_d_delta_v;
   delta_v[0] = d_gamma;
   d_func_g = delta * e_phi_tmp_tmp;
   dd_sf = d_delta * m_12 + d_func_g;
@@ -300,6 +351,8 @@ double test_controller(double theta, double varphi, double dtheta, double
   d_delta_v[2] = dd_sf;
   dd_delta_v[2] = (dd_delta * 0.0 + b_gamma * 0.0) + delta * 0.0;
   tau[2] = dd_sf / norm_d_delta_v;
+
+  // 'test_controller:64' d_tau = dd_delta_v/norm_d_delta_v - d_delta_v*d_delta_v'*dd_delta_v/norm_d_delta_v^3; 
   for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
     d_tau_tmp[3 * low_ip1] = d_delta_v[0] * d_delta_v[low_ip1];
     d_tau_tmp[3 * low_ip1 + 1] = d_delta_v[1] * d_delta_v[low_ip1];
@@ -307,6 +360,10 @@ double test_controller(double theta, double varphi, double dtheta, double
   }
 
   c_tmp = rt_powd_snf(norm_d_delta_v, 3.0);
+
+  // 'test_controller:65' dd_tau = ddd_delta_v/norm_d_delta_v - dd_delta_v*d_delta_v'*dd_delta_v/norm_d_delta_v^3 - ... 
+  // 'test_controller:66'         (dd_delta_v*d_delta_v'*dd_delta_v+d_delta_v*(dd_delta_v'*dd_delta_v)+d_delta_v*d_delta_v'*ddd_delta_v)/... 
+  // 'test_controller:67'         norm_d_delta_v^3 + d_delta_v*d_delta_v'*dd_delta_v*3*d_delta_v'*dd_delta_v/norm_d_delta_v^5; 
   for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
     b_dd_delta_v[3 * low_ip1] = dd_delta_v[0] * d_delta_v[low_ip1];
     b_dd_delta_v[3 * low_ip1 + 1] = dd_delta_v[1] * d_delta_v[low_ip1];
@@ -343,10 +400,19 @@ double test_controller(double theta, double varphi, double dtheta, double
   }
 
   //     %% Normal vector:
+  // 'test_controller:69' normal = [0 -1 0;1 0 0;0 0 0]*tau;
+  // 'test_controller:70' d_normal = [0 -1 0;1 0 0;0 0 0]*d_tau;
+  // 'test_controller:71' dd_normal = [0 -1 0;1 0 0;0 0 0]*dd_tau;
   //     %% Rho :
+  // 'test_controller:75' rho = delta_v + R_b*normal;
+  // 'test_controller:76' d_rho = d_delta_v + R_b*d_normal;
+  // 'test_controller:77' dd_rho = dd_delta_v + R_b*dd_normal;
   //     %% Need to find varphi = g(phi)
+  // 'test_controller:80' gamma = delta_v'*[1;0;0]-R_b*tau'*[0;1;0];
   q = 0.0;
   phi = 0.0;
+
+  // 'test_controller:81' psi = delta_v'*[0;1;0]+R_b*tau'*[1;0;0];
   d_gamma = 0.0;
   M_idx_0 = 0.0;
   for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
@@ -371,13 +437,23 @@ double test_controller(double theta, double varphi, double dtheta, double
   b_gamma = q - phi;
   dd_delta = d_gamma + M_idx_0;
 
+  // 'test_controller:82' d_gamma = d_delta_v'*[1;0;0]-R_b*d_tau'*[0;1;0];
+  // 'test_controller:83' d_psi = d_delta_v'*[0;1;0]+R_b*d_tau'*[1;0;0];
+  // 'test_controller:84' dd_gamma = dd_delta_v'*[1;0;0]-R_b*dd_tau'*[0;1;0];
+  // 'test_controller:85' dd_psi = dd_delta_v'*[0;1;0]+R_b*dd_tau'*[1;0;0];
   // func_g = atan2(gamma, psi);
+  // 'test_controller:87' d_func_g = (d_gamma*psi-d_psi*gamma)/(gamma^2+psi^2);
+  // 'test_controller:88' dd_func_g = (dd_gamma*psi-dd_psi*gamma)/(psi^2+gamma^2)-(d_gamma*psi-d_psi*gamma)*(2*gamma*d_gamma+2*psi*d_psi)/(gamma^2+psi^2)^2; 
   d_delta = b_gamma * b_gamma + dd_delta * dd_delta;
 
   //     %% s
+  // 'test_controller:91' d_s = norm(d_rho)/d_func_g;
   delta = 3.3121686421112381E-170;
 
+  // 'test_controller:92' dd_s = d_rho'*dd_rho/norm(d_rho)/d_func_g^2 - norm(d_rho)*dd_func_g/d_func_g^3; 
   //     %% s_f:
+  // 'test_controller:95' d_sf = norm_d_delta_v/d_func_g;
+  // 'test_controller:96' dd_sf = d_delta_v'*dd_delta_v/norm_d_delta_v/d_func_g - norm_d_delta_v*dd_func_g/d_func_g^3; 
   d_func_g = 0.0094868329805051412 * d_tau[0];
   d_gamma = d_func_g * 0.0;
   M_idx_0 = d_func_g;
@@ -445,6 +521,7 @@ double test_controller(double theta, double varphi, double dtheta, double
     q;
 
   //     %% Kappa:
+  // 'test_controller:99' kappa = dd_rho/d_func_g^2/d_s^2;
   c_tmp = d_s * d_s;
 
   //
@@ -474,12 +551,23 @@ double test_controller(double theta, double varphi, double dtheta, double
   //      dd_Theta = ((psi^3 + psi*gamma^2)*dd_gamma + (-psi^2*gamma - gamma^3)*dd_psi - 2*(psi*d_psi + gamma*d_gamma)*(d_gamma*psi - gamma*d_psi))*1/(psi^2 + gamma^2)^2; 
   //
   //     %% Rotations:
+  // 'test_controller:128' R = [cos(q(1)) -sin(q(1)) 0;sin(q(1)) cos(q(1)) 0;0 0 1]; 
   delta = std::sin(theta);
   b_gamma = std::cos(theta);
+
+  // 'test_controller:129' dR = [-sin(q(1)) -cos(q(1)) 0;cos(q(1)) -sin(q(1)) 0;0 0 0]; 
+  // 'test_controller:131' rhoxtau = cross(rho,tau);
   e_phi[2] = dd_e_phi[0] * tau[1] - dd_e_phi[1] * tau[0];
+
+  // 'test_controller:132' rhoxkappa = cross(rho,kappa);
+  // 'test_controller:136' m_11 = m_b*(rho'*rho+J_s/m_b+J_f/m_b);
+  // 'test_controller:137' m_12 = m_b*(d_s*rhoxtau(3)-d_sf*J_s/R_b/m_b);
   d_gamma = d_s * e_phi[2];
   dd_delta = d_gamma - d_sf * 5.445E-7 / 0.0094868329805051412 / 0.003;
   m_12 = 0.003 * dd_delta;
+
+  // 'test_controller:138' m_22 = m_b*(d_s^2+d_sf^2*J_s/R_b^2/m_b);
+  // 'test_controller:139' M = [m_11 m_12;m_12 m_22];
   ddd_delta_v[0] = ddd_delta_v[0] / M_idx_0 / c_tmp;
   ddd_delta_v[1] = ddd_delta_v[1] / M_idx_0 / c_tmp;
   M_idx_0 = 0.003 * ((((dd_e_phi[0] * dd_e_phi[0] + dd_e_phi[1] * dd_e_phi[1]) +
@@ -488,21 +576,36 @@ double test_controller(double theta, double varphi, double dtheta, double
   phi = d_sf * d_sf * 5.445E-7;
   d_delta = 0.003 * (c_tmp + phi / 9.000000000000006E-5 / 0.003);
 
+  // 'test_controller:141' c_11 = m_b*rho'*tau*d_s*d_phi_star;
+  // 'test_controller:142' c_12 = m_b*(rho'*tau*d_s*d_Theta*d_phi_star+(dd_s*rhoxtau(3)-dd_sf*J_s/R_b/m_b+d_s^2*rhoxkappa(3))*d_phi_star); 
+  // 'test_controller:143' c_21 = -m_b*rho'*tau*d_s*d_Theta*d_phi_star;
+  // 'test_controller:144' c_22 = m_b*(d_s*dd_s+d_sf*dd_sf*J_s/R_b^2/m_b)*d_phi_star; 
+  // 'test_controller:145' C = [c_11 c_12;c_21 c_22];
+  // 'test_controller:147' G = m_b*[[0 g 0]*dR*rho;[0 g 0]*R*tau*d_s];
+  // 'test_controller:150' alpha = m_b*((d_s*rhoxtau(3)-d_sf*J_s/R_b/m_b)*d_Theta+d_s^2+d_sf^2*J_s/R_b/m_b/R_b); 
   //      beta = m_b*((d_s*rhoxtau(3)-d_sf*J_s/R_b/m_b)*dd_Theta-rho'*tau*d_s*d_Theta^2 ... 
   //          + d_s*dd_s + d_sf*dd_sf*J_s/R_b/m_b/R_b);
   //      gamma = m_b*[0 g 0]*R*tau*d_s;
+  // 'test_controller:155' g_w = -m_b*(d_s*rhoxtau(3)-d_sf*J_s/m_b/R_b);
   //      g_y_dot = m_b*d_s*tau'*rho*(2*d_Theta*d_varphi);
   //      g_y = -get_ds(varphi)*m_b*g*[cos(get_theta(varphi)) -sin(get_theta(varphi)) 0]*get_tau(varphi); 
   //
+  // 'test_controller:159' B = [0;1;g_w/alpha];
   // 0];
+  // 'test_controller:160' Gamma = 1;
   // integral_term = integral_term + d_phi_star*0.001;
+  // 'test_controller:162' epsilon = [q(1)-Theta;dq(1)-d_Theta*dq(2);dq(2)-d_phi_star]; 
   d_e_phi[0] = theta - (-0.762393 * std::atan(a_tmp) + varphi);
   d_e_phi[1] = dtheta - d_Theta * dvarphi;
   d_e_phi[2] = dvarphi - d_phi_star;
 
   // q(2)-integral_term];
+  // 'test_controller:163' w = -(1/Gamma)*B'*riccati_sol*epsilon;
+  // 'test_controller:164' k = [1 0]*M*[d_Theta;1]/([d_Theta 1]*M*[0;1]);
   k = ((M_idx_0 + 0.0 * m_12) * d_Theta + (m_12 + 0.0 * d_delta)) / ((d_Theta *
     M_idx_0 + m_12) * 0.0 + (d_Theta * m_12 + d_delta));
+
+  // 'test_controller:165' u = k*([k^-1 -1]*M*[w+dd_Theta*d_phi_star^2;0]+[k^-1 -1]*C*[d_Theta*d_phi_star+epsilon(2);d_phi_star]+[k^-1 -1]*G); 
   if (rtIsNaN(d_phi_star_tmp)) {
     for (mid_i = 0; mid_i < 9; mid_i++) {
       d_tau_tmp[mid_i] = d_phi_star_tmp;
@@ -589,14 +692,22 @@ double test_controller(double theta, double varphi, double dtheta, double
                   + -(0.003 * (d_s * dd_s + d_sf * dd_sf * 5.445E-7 /
     9.000000000000006E-5 / 0.003) * d_phi_star)) * d_phi_star)) + (1.0 / k *
             (0.003 * d_func_g) + -(0.003 * (b_gamma * d_s))));
+
+  // 'test_controller:166' if u > 0
   if (u > 0.0) {
+    // 'test_controller:167' u = u + 0.0026;
     u += 0.0026;
   } else {
+    // 'test_controller:168' else
+    // 'test_controller:169' u = u - 0.0032;
     u -= 0.0032;
   }
 
   return u;
 }
+
+//
+//  function u = test_controller(theta,varphi,dtheta,dvarphi)
 
 void test_controller_init()
 {
@@ -4727,10 +4838,25 @@ void test_controller_init()
     0.61871400184389824, 0.61773209436937981, 0.617279120855016 };
 
   // integral_term = 0;
+  // 'test_controller:7' solutions = coder.load('C:\Users\g-oft\OneDrive\Dokumenter\master\ttk4900_master_thesis\solutions_riccati_and_dphi.mat'); 
+  // 'test_controller:8' [breaks,coefs,~,~,dim] = unmkpp(solutions.varphi_to_phi); 
+  // 'test_controller:8' ~
+  // 'test_controller:8' ~
+  // 'test_controller:9' spline_phi = mkpp(breaks,coefs,dim);
   std::memcpy(&spline_phi.breaks[0], &dv[0], 500U * sizeof(double));
   std::memcpy(&spline_phi.coefs[0], &coefs[0], 1996U * sizeof(double));
+
+  // 'test_controller:10' [breaks,coefs,~,~,dim] = unmkpp(solutions.spline_riccati_sol); 
+  // 'test_controller:10' ~
+  // 'test_controller:10' ~
+  // 'test_controller:11' spline_riccati = mkpp(breaks,coefs,dim);
   std::memcpy(&spline_riccati.breaks[0], &dv1[0], 200U * sizeof(double));
   std::memcpy(&spline_riccati.coefs[0], &b_coefs[0], 7164U * sizeof(double));
+
+  // 'test_controller:12' [breaks,coefs,~,~,dim] = unmkpp(solutions.spline_dphi); 
+  // 'test_controller:12' ~
+  // 'test_controller:12' ~
+  // 'test_controller:13' spline_dphi = mkpp(breaks,coefs,dim);
   std::memcpy(&spline_dphi.breaks[0], &dv2[0], 543U * sizeof(double));
   std::memcpy(&spline_dphi.coefs[0], &c_coefs[0], 2168U * sizeof(double));
 }
