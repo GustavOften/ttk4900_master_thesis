@@ -168,16 +168,17 @@ double test_controller(double theta, double varphi, double dtheta, double
   b_Theta_tmp = std::sin(4.0 * varphi);
   c_Theta_tmp = std::sin(6.0 * varphi);
   d_Theta_tmp = std::sin(8.0 * varphi);
-  Theta = -0.633234 * std::atan(((1.222294 * Theta_tmp + 0.3081043 * b_Theta_tmp)
-    + 0.04187133 * c_Theta_tmp) + 0.0020623 * d_Theta_tmp) + varphi;
-  a_tmp = ((1.222294 * std::sin(2.0 * varphi) + 0.3081043 * std::sin(4.0 *
-             varphi)) + 0.04187133 * std::sin(6.0 * varphi)) + 0.0020623 * std::
+  Theta = -1.134024 * std::atan(((0.5181815 * Theta_tmp + 0.1469204 *
+    b_Theta_tmp) + 0.03359762 * c_Theta_tmp) + 0.005072753 * d_Theta_tmp) +
+    varphi;
+  a_tmp = ((0.5181815 * std::sin(2.0 * varphi) + 0.1469204 * std::sin(4.0 *
+             varphi)) + 0.03359762 * std::sin(6.0 * varphi)) + 0.005072753 * std::
     sin(8.0 * varphi);
-  b_d_Theta_tmp = ((2.444588 * std::cos(2.0 * varphi) + 1.2324172 * std::cos(4.0
-    * varphi)) + 0.25122798 * std::cos(6.0 * varphi)) + 0.0164984 * std::cos(8.0
-    * varphi);
+  b_d_Theta_tmp = ((1.036363 * std::cos(2.0 * varphi) + 0.5876816 * std::cos(4.0
+    * varphi)) + 0.20158572000000002 * std::cos(6.0 * varphi)) + 0.040582024 *
+    std::cos(8.0 * varphi);
   c_d_Theta_tmp = a_tmp * a_tmp;
-  d_Theta = -0.633234 * b_d_Theta_tmp / (c_d_Theta_tmp + 1.0) + 1.0;
+  d_Theta = -1.134024 * b_d_Theta_tmp / (c_d_Theta_tmp + 1.0) + 1.0;
   if (rtIsNaN(varphi) || rtIsInf(varphi)) {
     phi = rtNaN;
   } else if (varphi == 0.0) {
@@ -546,9 +547,9 @@ double test_controller(double theta, double varphi, double dtheta, double
                  q * d_tau_tmp[3 * low_ip1 + 2]) * d_e_phi[low_ip1];
   }
 
-  q = (e_phi_tmp_tmp * M_idx_0 + -m_12) * (d_func_g + (-0.633234 * (((-4.889176 *
-    Theta_tmp - 4.9296688 * b_Theta_tmp) - 1.5073678799999999 * c_Theta_tmp) -
-    0.1319872 * d_Theta_tmp) / (a_tmp * a_tmp + 1.0) - -1.266468 *
+  q = (e_phi_tmp_tmp * M_idx_0 + -m_12) * (d_func_g + (-1.134024 * (((-2.072726 *
+    Theta_tmp - 2.3507264 * b_Theta_tmp) - 1.20951432 * c_Theta_tmp) -
+    0.324656192 * d_Theta_tmp) / (a_tmp * a_tmp + 1.0) - -2.268048 *
     (b_d_Theta_tmp * b_d_Theta_tmp) * a_tmp / ((c_d_Theta_tmp + 1.0) *
     (c_d_Theta_tmp + 1.0))) * (d_phi_star * d_phi_star)) + (e_phi_tmp_tmp * m_12
     + -d_delta) * 0.0;
