@@ -19,7 +19,7 @@
 void test_controller_initialize()
 {
   rt_InitInfAndNaN();
-  test_controller_init();
+  spline_phi_not_empty_init();
   isInitialized_test_controller = true;
 }
 
