@@ -5443,15 +5443,18 @@ double test_controller(double theta, double varphi, double dtheta, double
   }
 
   psi = 1.0 / k;
+  d_e_phi[0] = -0.0 / d_phi_star;
+  d_e_phi[1] = -1.0 / d_phi_star;
   a_tmp = 0.003 * ((m_12_tmp * d_Theta + c_tmp) + M_tmp / 0.0096597101405787537 /
                    0.003 / 0.0096597101405787537);
   d_e_phi[2] = -(-0.003 * (d_Theta_tmp - d_sf * 5.5112E-7 / 0.003 /
-    0.0096597101405787537) / a_tmp);
+    0.0096597101405787537) / a_tmp) / d_phi_star;
   d = 0.0;
   for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
     ddd_delta_v[low_ip1] = ddd_delta_v[low_ip1] / e_phi_tmp_tmp / c_tmp;
-    d += ((-0.0 * b_dd_delta_v[3 * low_ip1] + -b_dd_delta_v[3 * low_ip1 + 1]) +
-          d_e_phi[2] * b_dd_delta_v[3 * low_ip1 + 2]) * epsilon[low_ip1];
+    d += ((d_e_phi[0] * b_dd_delta_v[3 * low_ip1] + d_e_phi[1] * b_dd_delta_v[3 *
+           low_ip1 + 1]) + d_e_phi[2] * b_dd_delta_v[3 * low_ip1 + 2]) *
+      epsilon[low_ip1];
   }
 
   e_phi_tmp_tmp = d_phi_star * d_phi_star;
