@@ -16,8 +16,8 @@
 #include <cstring>
 
 // Function Definitions
-void b_ppval(const double pp_breaks[100], const double pp_coefs[3564], double x,
-             double v[9])
+void ppval(const double pp_breaks[100], const double pp_coefs[3564], double x,
+           double v[9])
 {
   if (rtIsNaN(x)) {
     for (int mid_i = 0; mid_i < 9; mid_i++) {
@@ -53,38 +53,6 @@ void b_ppval(const double pp_breaks[100], const double pp_coefs[3564], double x,
       }
     }
   }
-}
-
-double ppval(const double pp_breaks[760], const double pp_coefs[3036], double x)
-{
-  double v;
-  if (rtIsNaN(x)) {
-    v = x;
-  } else {
-    int low_i;
-    int low_ip1;
-    int high_i;
-    low_i = 0;
-    low_ip1 = 2;
-    high_i = 760;
-    while (high_i > low_ip1) {
-      int mid_i;
-      mid_i = ((low_i + high_i) + 1) >> 1;
-      if (x >= pp_breaks[mid_i - 1]) {
-        low_i = mid_i - 1;
-        low_ip1 = mid_i + 1;
-      } else {
-        high_i = mid_i;
-      }
-    }
-
-    double xloc;
-    xloc = x - pp_breaks[low_i];
-    v = xloc * (xloc * (xloc * pp_coefs[low_i] + pp_coefs[low_i + 759]) +
-                pp_coefs[low_i + 1518]) + pp_coefs[low_i + 2277];
-  }
-
-  return v;
 }
 
 // End of code generation (ppval.cpp)

@@ -19,10 +19,8 @@
 #include "test_controller_types.h"
 
 // Function Declarations
-extern void b_ppval(const double pp_breaks[100], const double pp_coefs[3564],
-                    double x, double v[9]);
-extern double ppval(const double pp_breaks[760], const double pp_coefs[3036],
-                    double x);
+extern void ppval(const double pp_breaks[100], const double pp_coefs[3564],
+                  double x, double v[9]);
 
 #endif
 
