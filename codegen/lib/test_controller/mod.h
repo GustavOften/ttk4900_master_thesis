@@ -20,7 +20,6 @@
 
 // Function Declarations
 extern double b_mod(double x);
-extern double c_mod(double x);
 
 #endif
 
