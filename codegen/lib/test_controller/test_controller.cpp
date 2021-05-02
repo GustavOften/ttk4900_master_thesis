@@ -73,6 +73,7 @@ static d_struct_T s_delta;
 static e_struct_T s_d_delta;
 static f_struct_T s_dd_delta;
 static g_struct_T s_ddd_delta;
+static double epsilon[3];
 
 // Function Declarations
 static double rt_powd_snf(double u0, double u1);
@@ -130,7 +131,7 @@ void spline_phi_not_empty_init()
 }
 
 void test_controller(double theta, double varphi, double dtheta, double dvarphi,
-                     double t, double *u, double epsilon[3], double
+                     double t, double *u, double current_epsilon[3], double
                      epsilon_true[3])
 {
   static const double dv[500] = { 7.6487167754037876E-5, 0.010618268499941571,
@@ -16252,7 +16253,6 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
     -0.0011426785969985761, -0.00097456832579739577, -0.00080648148467131117,
     -0.00063841417987503567, -0.00047036251988681333 };
 
-  double q;
   static const double dv5[3999] = { 0.0023550198733468912, 0.0039250369778570521,
     0.0054950573873994843, 0.0070650811023210839, 0.00863510812310727,
     0.010205138450379164, 0.011775172084894639, 0.013345209027549586,
@@ -17513,7 +17513,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
     6.2745502998617528, 6.276120293829293, 6.2776902911032586,
     6.2792602916830411 };
 
-  double xloc;
+  double q;
   static const double f_coefs[15992] = { 0.0032679141071858789,
     0.0032679141063507297, -0.047931388414396522, 0.052933540864060123,
     0.074623430269746813, 0.042559748132646562, 0.030537235192506972,
@@ -22818,7 +22818,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
     0.10711509915457257, 0.10709498630220265, 0.1070773556353873,
     0.10706220636255027, 0.10704953730859421, 0.10703934703211868 };
 
-  double psi;
+  double xloc;
   static const double dv6[3998] = { 0.0023550198733468912, 0.0039250369778570521,
     0.0054950573873994843, 0.0070650811023210839, 0.00863510812310727,
     0.010205138450379164, 0.011775172084894639, 0.013345209027549586,
@@ -24078,7 +24078,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
     6.2682703570728222, 6.26984033780583, 6.2714103218490695, 6.2729803092013832,
     6.2745502998617528, 6.276120293829293, 6.2776902911032586 };
 
-  double delta;
+  double psi;
   static const double g_coefs[15988] = { -25.719231946069975,
     -25.719231946430991, 62.397903608778059, 14.309765613290832,
     -20.554970628741646, -7.6219402707912192, 36.084703356500263,
@@ -29335,6 +29335,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
     -0.012810877700370484, -0.011229826384579877, -0.00964928593355346,
     -0.0080695006222733789, -0.0064906400627680622 };
 
+  double delta;
   double Theta;
   double a_tmp;
   double m_12;
@@ -29369,6 +29370,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   double d_tau[3];
   double dd_tau[3];
   double b_gamma;
+  signed char i;
   static const signed char d_a[9] = { 0, 1, 0, -1, 0, 0, 0, 0, 0 };
 
   double dd_e_phi[3];
@@ -29392,8 +29394,6 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   if (!spline_phi_not_empty) {
     // integral_term = 0;
     prev_time = t;
-
-    // epsilon = [0;0;0];
     std::memcpy(&spline_phi.breaks[0], &dv[0], 500U * sizeof(double));
     std::memcpy(&spline_phi.coefs[0], &coefs[0], 1996U * sizeof(double));
     spline_phi_not_empty = true;
@@ -29628,14 +29628,14 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   }
 
   c_tmp = rt_powd_snf(norm_d_delta_v, 3.0);
-  for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
-    b_dd_delta_v[3 * low_ip1] = dd_delta_v[0] * d_delta_v[low_ip1];
-    b_dd_delta_v[3 * low_ip1 + 1] = dd_delta_v[1] * d_delta_v[low_ip1];
-    d = (R[low_ip1] * dd_delta_v[0] + R[low_ip1 + 3] * dd_delta_v[1]) +
-      R[low_ip1 + 6] * dd_delta_v[2];
-    b_dd_delta_v[3 * low_ip1 + 2] = dd_delta_v[2] * d_delta_v[low_ip1];
-    e_phi[low_ip1] = d;
-    d_tau[low_ip1] = dd_delta_v[low_ip1] / norm_d_delta_v - d / c_tmp;
+  for (low_i = 0; low_i < 3; low_i++) {
+    b_dd_delta_v[3 * low_i] = dd_delta_v[0] * d_delta_v[low_i];
+    b_dd_delta_v[3 * low_i + 1] = dd_delta_v[1] * d_delta_v[low_i];
+    d = (R[low_i] * dd_delta_v[0] + R[low_i + 3] * dd_delta_v[1]) + R[low_i + 6]
+      * dd_delta_v[2];
+    b_dd_delta_v[3 * low_i + 2] = dd_delta_v[2] * d_delta_v[low_i];
+    e_phi[low_i] = d;
+    d_tau[low_i] = dd_delta_v[low_i] / norm_d_delta_v - d / c_tmp;
   }
 
   q = 0.0;
@@ -29670,23 +29670,22 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   xloc = 0.0;
   psi = 0.0;
   delta = 0.0;
-  for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
-    signed char i;
-    i = d_a[low_ip1 + 3];
-    ddd_delta_v[low_ip1] = delta_v[low_ip1] + 0.0096597101405787537 * ((
-      static_cast<double>(d_a[low_ip1]) * tau[0] + static_cast<double>(i) * tau
-      [1]) + 0.0 * tau[2]);
-    e_phi[low_ip1] = d_delta_v[low_ip1] + 0.0096597101405787537 * ((static_cast<
-      double>(d_a[low_ip1]) * d_tau[0] + static_cast<double>(i) * d_tau[1]) +
-      0.0 * d_tau[2]);
-    dd_e_phi[low_ip1] = dd_delta_v[low_ip1] + 0.0096597101405787537 * ((
-      static_cast<double>(d_a[low_ip1]) * dd_tau[0] + static_cast<double>(i) *
-      dd_tau[1]) + 0.0 * dd_tau[2]);
-    d = 0.0096597101405787537 * tau[low_ip1];
-    q += delta_v[low_ip1] * static_cast<double>(b[low_ip1]);
-    xloc += d * static_cast<double>(b_b[low_ip1]);
-    psi += delta_v[low_ip1] * static_cast<double>(b_b[low_ip1]);
-    delta += d * static_cast<double>(b[low_ip1]);
+  for (low_i = 0; low_i < 3; low_i++) {
+    i = d_a[low_i + 3];
+    ddd_delta_v[low_i] = delta_v[low_i] + 0.0096597101405787537 * ((static_cast<
+      double>(d_a[low_i]) * tau[0] + static_cast<double>(i) * tau[1]) + 0.0 *
+      tau[2]);
+    e_phi[low_i] = d_delta_v[low_i] + 0.0096597101405787537 * ((static_cast<
+      double>(d_a[low_i]) * d_tau[0] + static_cast<double>(i) * d_tau[1]) + 0.0 *
+      d_tau[2]);
+    dd_e_phi[low_i] = dd_delta_v[low_i] + 0.0096597101405787537 * ((static_cast<
+      double>(d_a[low_i]) * dd_tau[0] + static_cast<double>(i) * dd_tau[1]) +
+      0.0 * dd_tau[2]);
+    d = 0.0096597101405787537 * tau[low_i];
+    q += delta_v[low_i] * static_cast<double>(b[low_i]);
+    xloc += d * static_cast<double>(b_b[low_i]);
+    psi += delta_v[low_i] * static_cast<double>(b_b[low_i]);
+    delta += d * static_cast<double>(b[low_i]);
   }
 
   b_gamma = q - xloc;
@@ -29804,11 +29803,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   //
   // 0];
   // integral_term = integral_term + d_phi_star*0.001;
-  epsilon[0] = theta - Theta;
-  epsilon[1] = dtheta - d_Theta * dvarphi;
-  epsilon[2] = dvarphi - d_phi_star;
-
-  // q(2)-integral_term];
+  // epsilon = [q(1)-Theta;dq(1)-d_Theta*dq(2);dq(2)-d_phi_star];%q(2)-integral_term]; 
   //     %% Rotations:
   q = std::sin(Theta);
   psi = std::cos(Theta);
@@ -29870,6 +29865,9 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   //      end
   d_delta = 0.003 * d_s;
   c_a = -d_s * 0.003 * 9.81;
+  epsilon_true[0] = theta - Theta;
+  epsilon_true[1] = dtheta - d_Theta * dvarphi;
+  epsilon_true[2] = dvarphi - d_phi_star;
 
   // q(2)-integral_term];
   // 0];
@@ -29882,21 +29880,20 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   q = 0.0;
   xloc = 0.0;
   d_gamma = 0.0;
-  for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
-    high_i = 3 * low_ip1 + 2;
-    b_dd_delta_v[high_i] = 0.0;
-    low_i = 3 * low_ip1 + 1;
-    a += (0.0 * b_dd_delta_v[3 * low_ip1] + 9.81 * b_dd_delta_v[low_i]) *
-      ddd_delta_v[low_ip1];
-    d = R[3 * low_ip1];
-    b_a += ((0.0 * d + 9.81 * R[low_i]) + 0.0 * R[high_i]) * tau[low_ip1];
-    epsilon_true[low_ip1] = epsilon[low_ip1];
-    c_a += d_e_phi[low_ip1] * tau[low_ip1];
-    q += d_delta * tau[low_ip1] * ddd_delta_v[low_ip1];
-    xloc += ddd_delta_v[low_ip1] * tau[low_ip1];
-    d = (0.0 * d + 0.02943 * R[low_i]) + 0.0 * R[high_i];
-    d_e_phi[low_ip1] = d;
-    d_gamma += d * tau[low_ip1];
+  for (low_i = 0; low_i < 3; low_i++) {
+    low_ip1 = 3 * low_i + 2;
+    b_dd_delta_v[low_ip1] = 0.0;
+    high_i = 3 * low_i + 1;
+    a += (0.0 * b_dd_delta_v[3 * low_i] + 9.81 * b_dd_delta_v[high_i]) *
+      ddd_delta_v[low_i];
+    d = R[3 * low_i];
+    b_a += ((0.0 * d + 9.81 * R[high_i]) + 0.0 * R[low_ip1]) * tau[low_i];
+    c_a += d_e_phi[low_i] * tau[low_i];
+    q += d_delta * tau[low_i] * ddd_delta_v[low_i];
+    xloc += ddd_delta_v[low_i] * tau[low_i];
+    d = (0.0 * d + 0.02943 * R[high_i]) + 0.0 * R[low_ip1];
+    d_e_phi[low_i] = d;
+    d_gamma += d * tau[low_i];
   }
 
   *u = k * ((delta + ((b_gamma * (((0.003 * ddd_delta_v[0] * tau[0] + 0.003 *
@@ -29925,24 +29922,31 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   d_delta_v[1] = *u;
   d_delta_v[2] = -0.003 * (d_s * e_phi[2] - d_sf * 5.5112E-7 / 0.003 /
     0.0096597101405787537) / a_tmp * *u;
-  d = epsilon[0];
-  m_12_tmp = epsilon[1];
+  d = epsilon[1];
+  m_12_tmp = epsilon[0];
   q = epsilon[2];
   for (low_i = 0; low_i < 3; low_i++) {
-    delta_v[low_i] = (b_dd_delta_v[low_i] * d + b_dd_delta_v[low_i + 3] *
-                      m_12_tmp) + b_dd_delta_v[low_i + 6] * q;
-    xloc = (static_cast<double>(e_a[low_i]) * d + static_cast<double>(e_a[low_i
-             + 3]) * m_12_tmp) + static_cast<double>(e_a[low_i + 6]) * q;
-    dd_e_phi[low_i] = xloc - xloc;
+    i = e_a[low_i + 3];
+    xloc = static_cast<double>(e_a[low_i]) * epsilon_true[0] + static_cast<
+      double>(i) * epsilon_true[1];
+    psi = static_cast<double>(e_a[low_i]) * m_12_tmp + static_cast<double>(i) *
+      d;
+    i = e_a[low_i + 6];
+    xloc += static_cast<double>(i) * epsilon_true[2];
+    psi += static_cast<double>(i) * q;
+    delta_v[low_i] = (b_dd_delta_v[low_i] * m_12_tmp + b_dd_delta_v[low_i + 3] *
+                      d) + b_dd_delta_v[low_i + 6] * q;
+    dd_e_phi[low_i] = xloc - psi;
   }
 
   for (low_i = 0; low_i < 3; low_i++) {
-    epsilon[low_i] += ((delta_v[low_i] + d_delta_v[low_i]) + ((static_cast<
+    d = epsilon[low_i] + ((delta_v[low_i] + d_delta_v[low_i]) + ((static_cast<
       double>(f_a[low_i]) * dd_e_phi[0] + static_cast<double>(f_a[low_i + 3]) *
       dd_e_phi[1]) + static_cast<double>(f_a[low_i + 6]) * dd_e_phi[2])) * m_12;
+    epsilon[low_i] = d;
+    current_epsilon[low_i] = d;
   }
 
-  // current_epsilon = epsilon;
   if (dtheta > 0.0) {
     *u += 0.0026;
   } else {
@@ -29950,6 +29954,13 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
       *u -= 0.0036;
     }
   }
+}
+
+void test_controller_init()
+{
+  epsilon[0] = 0.0;
+  epsilon[1] = 0.0;
+  epsilon[2] = 0.0;
 }
 
 // End of code generation (test_controller.cpp)
