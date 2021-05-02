@@ -21,7 +21,7 @@
 // Function Declarations
 extern void spline_phi_not_empty_init();
 extern void test_controller(double theta, double varphi, double dtheta, double
-  dvarphi, double t, double luenberger_gain, double *u, double epsilon[3]);
+  dvarphi, double t, double *u, double epsilon[3], double epsilon_true[3]);
 
 #endif
 
