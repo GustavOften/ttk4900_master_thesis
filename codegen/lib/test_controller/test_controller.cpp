@@ -9830,6 +9830,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   //      g_y = -get_ds(varphi)*m_b*g*[cos(get_theta(varphi)) -sin(get_theta(varphi)) 0]*get_tau(varphi); 
   //
   // B = [0;1;g_w/alpha];%0];
+  d_e_phi[0] = 0.0 / d_phi_star;
   d_e_phi[1] = 1.0 / d_phi_star;
 
   // integral_term = integral_term + d_phi_star*0.001;
@@ -9907,6 +9908,7 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
                    0.003 / 0.0096597101405787537);
   b_gamma = -0.003 * (xloc - scale * 5.5112E-7 / 0.003 / 0.0096597101405787537) /
     alpha;
+  d_e_phi[2] = b_gamma / d_phi_star;
   phi = 0.003 * delta;
   psi = 0.003 * ((((ddd_delta_v[0] * ddd_delta_v[0] + ddd_delta_v[1] *
                     ddd_delta_v[1]) + ddd_delta_v[2] * ddd_delta_v[2]) +
@@ -9926,14 +9928,14 @@ void test_controller(double theta, double varphi, double dtheta, double dvarphi,
   if (with_luenberger) {
     xloc = 0.0;
     for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
-      xloc += ((-0.0 * v[3 * low_ip1] + -d_e_phi[1] * v[3 * low_ip1 + 1]) +
-               -b_gamma * v[3 * low_ip1 + 2]) * epsilon[low_ip1];
+      xloc += ((-d_e_phi[0] * v[3 * low_ip1] + -d_e_phi[1] * v[3 * low_ip1 + 1])
+               + -d_e_phi[2] * v[3 * low_ip1 + 2]) * epsilon[low_ip1];
     }
   } else {
     xloc = 0.0;
     for (low_ip1 = 0; low_ip1 < 3; low_ip1++) {
-      xloc += ((-0.0 * v[3 * low_ip1] + -d_e_phi[1] * v[3 * low_ip1 + 1]) +
-               -b_gamma * v[3 * low_ip1 + 2]) * epsilon_measured[low_ip1];
+      xloc += ((-d_e_phi[0] * v[3 * low_ip1] + -d_e_phi[1] * v[3 * low_ip1 + 1])
+               + -d_e_phi[2] * v[3 * low_ip1 + 2]) * epsilon_measured[low_ip1];
     }
   }
 
