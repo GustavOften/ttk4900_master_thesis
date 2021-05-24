@@ -22,8 +22,8 @@
 extern void epsilon_not_empty_init();
 extern void spline_phi_not_empty_init();
 extern void test_controller(double theta, double varphi, double dtheta, double
-  dvarphi, double t, const double luenberger[3], double *u, double
-  current_epsilon[3], double epsilon_true[3]);
+  dvarphi, double t, bool with_luenberger, const double luenberger[3], double *u,
+  double current_epsilon[3], double epsilon_measured[3]);
 
 #endif
 
